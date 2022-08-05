@@ -8,13 +8,13 @@ import javafx.scene.paint.Paint;
  */
 public class Body {
 
-	private String name;
-	private double radius;
-	private double mass;
+	private final String name;
+	private final double radius;
+	private final double mass;
+	private final Paint paint;
+
 	private Vector2 position;
 	private Vector2 velocity;
-	private Paint paint;
-	private double visualScale;
 
 	/**
 	 * @param name
@@ -32,11 +32,10 @@ public class Body {
 
 		position = new Vector2();
 		velocity = new Vector2();
-		visualScale = 1.0;
 	}
 
 	/**
-	 * @param deltaTime
+	 * @param deltaTime time elapsed since the last update, in seconds
 	 * @since 0.0.0
 	 */
 	public void update(double deltaTime) {
@@ -52,26 +51,11 @@ public class Body {
 	}
 
 	/**
-	 * @param radius radius in meters
-	 */
-	public void setRadius(double radius) {
-		this.radius = radius;
-	}
-
-	/**
 	 * @return mass in kilograms
 	 * @since 0.0.0
 	 */
 	public double getMass() {
 		return mass;
-	}
-
-	/**
-	 * @param mass mass in kilograms
-	 * @since 0.0.0
-	 */
-	public void setMass(double mass) {
-		this.mass = mass;
 	}
 
 	/**
@@ -112,22 +96,6 @@ public class Body {
 	 */
 	public Paint getPaint() {
 		return paint;
-	}
-
-	/**
-	 * @return
-	 * @since 0.0.0
-	 */
-	public double getVisualScale() {
-		return visualScale;
-	}
-
-	/**
-	 * @param visualScale
-	 * @since 0.0.0
-	 */
-	public void setVisualScale(double visualScale) {
-		this.visualScale = visualScale;
 	}
 
 	@Override

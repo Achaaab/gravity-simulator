@@ -11,8 +11,8 @@ import static java.util.Objects.hash;
  */
 public class Vector2 {
 
-	private final double x;
-	private final double y;
+	private double x;
+	private double y;
 
 	/**
 	 * @since 0.0.0
@@ -36,7 +36,7 @@ public class Vector2 {
 	 * @return
 	 * @since 0.0.0
 	 */
-	public double getMagnitude() {
+	public double magnitude() {
 		return sqrt(x * x + y * y);
 	}
 
@@ -44,7 +44,7 @@ public class Vector2 {
 	 * @return
 	 * @since 0.0.0
 	 */
-	public double getSquaredMagnitude() {
+	public double squaredMagnitude() {
 		return x * x + y * y;
 	}
 
@@ -64,6 +64,18 @@ public class Vector2 {
 	 */
 	public Vector2 plus(Vector2 that) {
 		return new Vector2(this.x + that.x, this.y + that.y);
+	}
+
+	/**
+	 * Adds that to this.
+	 *
+	 * @param that
+	 * @since 0.0.0
+	 */
+	public void setPlus(Vector2 that) {
+
+		x += that.x;
+		y += that.y;
 	}
 
 	/**
@@ -89,7 +101,7 @@ public class Vector2 {
 	 * @since 0.0.0
 	 */
 	public Vector2 normalize() {
-		return divide(getMagnitude());
+		return divide(magnitude());
 	}
 
 	/**

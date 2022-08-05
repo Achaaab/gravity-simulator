@@ -3,6 +3,8 @@ package com.github.achaaab.gravity_simulator;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 
+import static java.lang.Math.log;
+import static java.lang.Math.pow;
 import static javafx.scene.paint.Color.BLACK;
 
 /**
@@ -12,11 +14,17 @@ import static javafx.scene.paint.Color.BLACK;
 public class UniverseView extends Canvas {
 
 	/**
-	 * reality to screen scale in meters per pixel
+	 * display scale, in meters per pixel
 	 */
-	private static final double SCALE = 1.0 / 2_000_000_000;
+	private static final double INITIAL_SCALE = 1E10;
+
+	/**
+	 * display radius of the smallest body, in pixels
+	 */
+	private static final double MINIMUM_VISUAL_RADIUS = 2.0;
 
 	private final UniverseModel model;
+	private double scale;
 
 	/**
 	 * @param model
@@ -25,9 +33,12 @@ public class UniverseView extends Canvas {
 	public UniverseView(UniverseModel model) {
 
 		this.model = model;
+		scale = INITIAL_SCALE;
 
 		setWidth(1600);
 		setHeight(900);
+
+		setOnScroll(scroll -> scale /= pow(2, scroll.getDeltaY() / 100));
 	}
 
 	/**
@@ -35,31 +46,42 @@ public class UniverseView extends Canvas {
 	 */
 	public void draw() {
 
+		var width = getWidth();
+		var height = getHeight();
+
 		var graphicsContext = getGraphicsContext2D();
 		graphicsContext.setFill(BLACK);
-		graphicsContext.fillRect(0, 0, getWidth(), getHeight());
+		graphicsContext.fillRect(0, 0, width, height);
 
 		graphicsContext.save();
-		graphicsContext.translate(getWidth() / 2, getHeight() / 2);
-		graphicsContext.scale(SCALE, SCALE);
-		model.getBodies().forEach(body -> draw(body, graphicsContext));
+
+		graphicsContext.translate(width / 2, height / 2);
+		graphicsContext.scale(1 / scale, 1 / scale);
+
+		var bodies = model.getBodies();
+
+		bodies.stream().
+				mapToDouble(Body::getRadius).
+				min().ifPresent(
+						minimalRadius -> bodies.forEach(body -> draw(body, graphicsContext, minimalRadius)));
+
 		graphicsContext.restore();
 	}
 
 	/**
 	 * @param body
 	 * @param graphicsContext
+	 * @param minimalRadius
 	 * @since 0.0.0
 	 */
-	private void draw(Body body, GraphicsContext graphicsContext) {
+	private void draw(Body body, GraphicsContext graphicsContext, double minimalRadius) {
 
 		var paint = body.getPaint();
 
 		var position = body.getPosition();
 		var radius = body.getRadius();
-		var visualScale = body.getVisualScale();
 
-		var visualRadius = radius * visualScale;
+		var visualRadius = scale * MINIMUM_VISUAL_RADIUS * log(radius / minimalRadius);
 
 		graphicsContext.setFill(paint);
 

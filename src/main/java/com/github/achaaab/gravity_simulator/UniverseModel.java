@@ -3,8 +3,6 @@ package com.github.achaaab.gravity_simulator;
 import java.util.HashSet;
 import java.util.Set;
 
-import static java.lang.Math.PI;
-import static java.lang.Math.sqrt;
 import static java.util.function.Function.identity;
 import static java.util.function.Predicate.not;
 import static java.util.stream.Collectors.toMap;
@@ -20,21 +18,6 @@ public class UniverseModel {
 	 */
 	public static final double G = 6.6743E-11;
 
-	/**
-	 * @param primaryBody
-	 * @param secondaryBody
-	 * @since 0.0.0
-	 */
-	public static Vector2 getCircularOrbitalVelocity(Body primaryBody, Body secondaryBody) {
-
-		var primaryToSecondary = secondaryBody.getPosition().minus(primaryBody.getPosition());
-		var radius = primaryToSecondary.getMagnitude();
-		var direction = primaryToSecondary.rotate(PI / 2).normalize();
-		var magnitude = sqrt(G * primaryBody.getMass() / radius);
-
-		return direction.times(magnitude);
-	}
-
 	private final Set<Body> bodies;
 
 	/**
@@ -45,34 +28,50 @@ public class UniverseModel {
 	}
 
 	/**
+	 * Adds a body to this universe.
+	 *
+	 * @param body body to add
+	 * @since 0.0.0
+	 */
+	public void addBody(Body body) {
+		bodies.add(body);
+	}
+
+	/**
+	 * @param orbit
+	 * @since 0.0.0
+	 */
+	public void addOrbitalBody(EllipticOrbit orbit) {
+
+		var primaryBody = orbit.primaryBody();
+		var secondaryBody = orbit.secondaryBody();
+		var apoapsis = orbit.apoapsis();
+
+		var primaryPosition = primaryBody.getPosition();
+		var secondaryPosition = primaryPosition.plus(new Vector2(apoapsis, 0));
+		secondaryBody.setPosition(secondaryPosition);
+
+		var primaryVelocity = primaryBody.getVelocity();
+		var secondaryVelocity = primaryVelocity.plus(orbit.getVelocityAtApoapsis());
+		secondaryBody.setVelocity(secondaryVelocity);
+
+		addBody(secondaryBody);
+	}
+
+	/**
 	 * @param deltaTime time elapsed since last update, in seconds
 	 * @since 0.0.0
 	 */
 	public void update(double deltaTime) {
 
 		// first step: collect exerted forces
-		var forces = bodies.stream().collect(toMap(identity(), this::getForces));
+		var forces = bodies.stream().collect(toMap(identity(), this::getResultingForce));
 
 		// second step: apply collected forces
 		forces.forEach((body, bodyForces) -> apply(bodyForces, body, deltaTime));
 
 		// third step: update bodies
 		bodies.forEach(body -> body.update(deltaTime));
-	}
-
-	/**
-	 * @param forces
-	 * @param body
-	 * @param deltaTime
-	 * @since 0.0.0
-	 */
-	public void apply(Set<Vector2> forces, Body body, double deltaTime) {
-
-		var resultingForce = forces.stream().
-				reduce(Vector2::plus).
-				orElse(new Vector2());
-
-		apply(resultingForce, body, deltaTime);
 	}
 
 	/**
@@ -95,25 +94,25 @@ public class UniverseModel {
 	 * @return
 	 * @since 0.0.0
 	 */
-	private Set<Vector2> getForces(Body body) {
+	private Vector2 getResultingForce(Body body) {
 
-		var forces = new HashSet<Vector2>();
+		var resultingForce = new Vector2();
 
-		addGravitationalForces(body, forces);
+		addGravitationalForces(body, resultingForce);
 
-		return forces;
+		return resultingForce;
 	}
 
 	/**
 	 * @param body
-	 * @param forces
+	 * @param resultingForce
 	 * @since 0.0.0
 	 */
-	private void addGravitationalForces(Body body, Set<Vector2> forces) {
+	private void addGravitationalForces(Body body, Vector2 resultingForce) {
 
 		bodies.stream().
 				filter(not(body::equals)).
-				forEach(otherBody -> addGravitationalForce(body, otherBody, forces));
+				forEach(otherBody -> addGravitationalForce(body, otherBody, resultingForce));
 	}
 
 	/**
@@ -121,9 +120,10 @@ public class UniverseModel {
 	 *
 	 * @param body0
 	 * @param body1
+	 * @param resultingForce
 	 * @since 0.0.0
 	 */
-	private void addGravitationalForce(Body body0, Body body1, Set<Vector2> forces) {
+	private void addGravitationalForce(Body body0, Body body1, Vector2 resultingForce) {
 
 		var mass0 = body0.getMass();
 		var mass1 = body1.getMass();
@@ -131,13 +131,13 @@ public class UniverseModel {
 		var position1 = body1.getPosition();
 
 		var deltaPosition = position1.minus(position0);
-		var squaredDistance = deltaPosition.getSquaredMagnitude();
+		var squaredDistance = deltaPosition.squaredMagnitude();
 
 		var direction = deltaPosition.normalize();
 		var magnitude = G * mass0 * mass1 / squaredDistance;
 
 		var gravitationalForce = direction.times(magnitude);
-		forces.add(gravitationalForce);
+		resultingForce.setPlus(gravitationalForce);
 	}
 
 	/**
