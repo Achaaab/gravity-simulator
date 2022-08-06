@@ -12,8 +12,11 @@ import javafx.util.Duration;
 
 import java.util.List;
 
+import static java.lang.Math.max;
+import static java.lang.Math.min;
 import static java.lang.Math.pow;
 import static javafx.animation.Animation.INDEFINITE;
+import static javafx.util.Duration.hours;
 import static javafx.util.Duration.seconds;
 
 /**
@@ -25,7 +28,10 @@ public class UniverseController implements EventHandler<KeyEvent> {
 	private static final double ZOOM_FACTOR = 1.01;
 	private static final double TIME_FACTOR = 1.5;
 	private static final double DEFAULT_TIME_SCALE = 1_000_000;
+	private static final double MINIMUM_TIME_SCALE = 1_000;
+	private static final double MAXIMUM_TIME_SCALE = 1_000_000_000;
 	private static final Duration FRAME_DURATION = seconds(1.0 / 60);
+	private static final double MAXIMUM_DELTA_TIME = hours(24).toSeconds();
 
 	private final UniverseModel model;
 	private final UniverseView view;
@@ -70,7 +76,18 @@ public class UniverseController implements EventHandler<KeyEvent> {
 	 */
 	public void update(ActionEvent keyFrameEvent) {
 
-		model.update(FRAME_DURATION.toSeconds() * timeScale);
+		var scaledTime = FRAME_DURATION.toSeconds() * timeScale;
+
+		var deltaTime = 0;
+
+		while (deltaTime + MAXIMUM_DELTA_TIME < scaledTime) {
+
+			model.update(MAXIMUM_DELTA_TIME);
+			deltaTime += MAXIMUM_DELTA_TIME;
+		}
+
+		model.update(scaledTime - deltaTime);
+
 		view.draw();
 	}
 
@@ -149,8 +166,8 @@ public class UniverseController implements EventHandler<KeyEvent> {
 		switch (code) {
 
 			case TAB -> changeAnchor(!shift);
-			case ADD -> timeScale *= TIME_FACTOR;
-			case SUBTRACT -> timeScale /= TIME_FACTOR;
+			case ADD -> timeScale = min(MAXIMUM_TIME_SCALE, timeScale * TIME_FACTOR);
+			case SUBTRACT -> timeScale = max(MINIMUM_TIME_SCALE, timeScale / TIME_FACTOR);
 		}
 	}
 }

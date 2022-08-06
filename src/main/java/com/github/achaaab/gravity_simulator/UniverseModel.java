@@ -1,5 +1,6 @@
 package com.github.achaaab.gravity_simulator;
 
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
