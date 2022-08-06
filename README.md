@@ -39,16 +39,9 @@ mvn javafx:run
 ![Sun, Mercury, Eearth, Moon, Mars and Jupiter](.github/pictures/mercury_to_jupiter.png)
 
 ## Improvements
-* Currently, the simulation is updated 60 times per second. In this interval, bodies move in a straight line (discrete 
-  simulation). This approximation can make bodies escape their orbit, if the time scale is too big. A possible 
-  workaround is to split the scaled time interval into small time intervals which must not be bigger than a fixed value, 
-  for example, 1 day. With this workaround, the CPU load will increases with the time scale to compute every
-  intermediate position between frames.
-
-* Bodies start at their apoapsis point, which is fixed on the right. This is probably not realistic and could be improved.
-
+* Bodies start at their apoapsis point, which is fixed on the right. This is probably not realistic and could be 
+  improved.
 * A menu would be nice to explain usage.
-
 * A tri-dimensional version would be great.
 
 ## Contributing
