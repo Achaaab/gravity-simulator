@@ -1,6 +1,7 @@
 package com.github.achaaab.gravity_simulator;
 
-import java.util.HashSet;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 import static java.util.function.Function.identity;
@@ -18,13 +19,13 @@ public class UniverseModel {
 	 */
 	public static final double G = 6.6743E-11;
 
-	private final Set<Body> bodies;
+	private final List<Body> bodies;
 
 	/**
 	 * @since 0.0.0
 	 */
 	public UniverseModel() {
-		bodies = new HashSet<>();
+		bodies = new ArrayList<>();
 	}
 
 	/**
@@ -38,10 +39,13 @@ public class UniverseModel {
 	}
 
 	/**
-	 * @param orbit
+	 * Adds a body that revolves around another body. Set its position at apoapsis and gives it the velocity needed
+	 * to maintain the given elliptic orbit.
+	 *
+	 * @param orbit orbit
 	 * @since 0.0.0
 	 */
-	public void addOrbitalBody(EllipticOrbit orbit) {
+	public void addOrbitingBody(EllipticOrbit orbit) {
 
 		var primaryBody = orbit.primaryBody();
 		var secondaryBody = orbit.secondaryBody();
@@ -144,7 +148,7 @@ public class UniverseModel {
 	 * @return
 	 * @since 0.0.0
 	 */
-	public Set<Body> getBodies() {
+	public List<Body> getBodies() {
 		return bodies;
 	}
 }

@@ -1,10 +1,14 @@
 package com.github.achaaab.gravity_simulator;
 
+import javafx.beans.property.Property;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 
+import java.util.List;
+
 import static java.lang.Math.log;
-import static java.lang.Math.pow;
+import static java.lang.Math.max;
 import static javafx.scene.paint.Color.BLACK;
 
 /**
@@ -14,31 +18,46 @@ import static javafx.scene.paint.Color.BLACK;
 public class UniverseView extends Canvas {
 
 	/**
-	 * display scale, in meters per pixel
+	 * display scale, in pixel per meter
 	 */
-	private static final double INITIAL_SCALE = 1E10;
+	private static final double INITIAL_SCALE = 1.0E-10;
 
 	/**
 	 * display radius of the smallest body, in pixels
 	 */
-	private static final double MINIMUM_VISUAL_RADIUS = 2.0;
+	private static final double MINIMUM_DISPLAY_RADIUS = 2.0;
 
-	private final UniverseModel model;
+	private List<Body> bodies;
 	private double scale;
+	private Property<Body> anchor;
 
 	/**
-	 * @param model
 	 * @since 0.0.0
 	 */
-	public UniverseView(UniverseModel model) {
+	public UniverseView() {
 
-		this.model = model;
 		scale = INITIAL_SCALE;
 
 		setWidth(1600);
 		setHeight(900);
 
-		setOnScroll(scroll -> scale /= pow(2, scroll.getDeltaY() / 100));
+		anchor = new SimpleObjectProperty<>();
+	}
+
+	/**
+	 * @param bodies
+	 * @since 0.0.0
+	 */
+	public void setBodies(List<Body> bodies) {
+		this.bodies = bodies;
+	}
+
+	/**
+	 * @return anchor property
+	 * @since 0.0.0
+	 */
+	public Property<Body> anchor() {
+		return anchor;
 	}
 
 	/**
@@ -56,9 +75,13 @@ public class UniverseView extends Canvas {
 		graphicsContext.save();
 
 		graphicsContext.translate(width / 2, height / 2);
-		graphicsContext.scale(1 / scale, 1 / scale);
+		graphicsContext.scale(scale, scale);
 
-		var bodies = model.getBodies();
+		if (anchor.getValue() != null) {
+
+			var anchorPosition = anchor.getValue().getPosition();
+			graphicsContext.translate(-anchorPosition.getX(), -anchorPosition.getY());
+		}
 
 		bodies.stream().
 				mapToDouble(Body::getRadius).
@@ -81,14 +104,30 @@ public class UniverseView extends Canvas {
 		var position = body.getPosition();
 		var radius = body.getRadius();
 
-		var visualRadius = scale * MINIMUM_VISUAL_RADIUS * log(radius / minimalRadius);
+		var displayRadius = max(MINIMUM_DISPLAY_RADIUS * (1 + log(radius / minimalRadius)) / scale, radius);
 
 		graphicsContext.setFill(paint);
 
 		graphicsContext.fillOval(
-				position.getX() - visualRadius,
-				position.getY() - visualRadius,
-				2 * visualRadius,
-				2 * visualRadius);
+				position.getX() - displayRadius,
+				position.getY() - displayRadius,
+				2 * displayRadius,
+				2 * displayRadius);
+	}
+
+	/**
+	 * @return display scale in meters per pixel
+	 * @since 0.0.0
+	 */
+	public double getScale() {
+		return scale;
+	}
+
+	/**
+	 * @param scale display scale in meters per pixel
+	 * @since 0.0.0
+	 */
+	public void setScale(double scale) {
+		this.scale = scale;
 	}
 }

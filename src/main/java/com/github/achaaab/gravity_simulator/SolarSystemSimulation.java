@@ -1,13 +1,10 @@
 package com.github.achaaab.gravity_simulator;
 
-import javafx.animation.KeyFrame;
-import javafx.animation.Timeline;
 import javafx.application.Application;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
-import static javafx.animation.Animation.INDEFINITE;
 import static javafx.scene.paint.Color.BLUE;
 import static javafx.scene.paint.Color.BROWN;
 import static javafx.scene.paint.Color.DARKGRAY;
@@ -18,7 +15,6 @@ import static javafx.scene.paint.Color.ORANGE;
 import static javafx.scene.paint.Color.RED;
 import static javafx.scene.paint.Color.WHITE;
 import static javafx.scene.paint.Color.YELLOW;
-import static javafx.util.Duration.seconds;
 
 /**
  * @author Jonathan Guéhenneux
@@ -74,8 +70,6 @@ public class SolarSystemSimulation extends Application {
 	private static final double NEPTUNE_APHELION = 4.54E12;
 	private static final double NEPTUNE_PERIHELION = 4.46E12;
 
-	private static final double TIME_SCALE = 10_000_000;
-
 	@Override
 	public void start(Stage stage) {
 
@@ -103,35 +97,25 @@ public class SolarSystemSimulation extends Application {
 		var neptuneOrbit = new EllipticOrbit(sun, neptune, NEPTUNE_APHELION, NEPTUNE_PERIHELION, true);
 
 		universe.addBody(sun);
-		universe.addOrbitalBody(mercuryOrbit);
-		universe.addOrbitalBody(venusOrbit);
-		universe.addOrbitalBody(earthOrbit);
-		universe.addOrbitalBody(moonOrbit);
-		universe.addOrbitalBody(marsOrbit);
-		universe.addOrbitalBody(jupiterOrbit);
-		universe.addOrbitalBody(saturnOrbit);
-		universe.addOrbitalBody(uranusOrbit);
-		universe.addOrbitalBody(neptuneOrbit);
+		universe.addOrbitingBody(mercuryOrbit);
+		universe.addOrbitingBody(venusOrbit);
+		universe.addOrbitingBody(earthOrbit);
+		universe.addOrbitingBody(moonOrbit);
+		universe.addOrbitingBody(marsOrbit);
+		universe.addOrbitingBody(jupiterOrbit);
+		universe.addOrbitingBody(saturnOrbit);
+		universe.addOrbitingBody(uranusOrbit);
+		universe.addOrbitingBody(neptuneOrbit);
 
-		var view = new UniverseView(universe);
+		var view = new UniverseView();
+		var controller = new UniverseController(universe, view);
 
 		var root = new Group(view);
 		var scene = new Scene(root);
 		stage.setScene(scene);
+		scene.setOnKeyPressed(controller);
 
 		stage.setTitle("solar system simulation");
 		stage.show();
-
-		var frameDuration = seconds(1.0 / 60.0);
-
-		var keyFrame = new KeyFrame(frameDuration, onFinished -> {
-
-			universe.update(TIME_SCALE * frameDuration.toSeconds());
-			view.draw();
-		});
-
-		var animation = new Timeline(keyFrame);
-		animation.setCycleCount(INDEFINITE);
-		animation.play();
 	}
 }
