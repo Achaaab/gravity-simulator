@@ -17,10 +17,12 @@ public class Body {
 	private Vector2 velocity;
 
 	/**
-	 * @param name
-	 * @param radius
-	 * @param mass
-	 * @param paint
+	 * Creates a new body.
+	 *
+	 * @param name name of the body
+	 * @param radius radius of the body, in meters
+	 * @param mass mass of the body, in kilograms
+	 * @param paint how to paint the body
 	 * @since 0.0.0
 	 */
 	public Body(String name, double radius, double mass, Paint paint) {
@@ -59,7 +61,7 @@ public class Body {
 	}
 
 	/**
-	 * @return
+	 * @return position of this body, in meters x meters
 	 * @since 0.0.0
 	 */
 	public Vector2 getPosition() {
@@ -67,7 +69,7 @@ public class Body {
 	}
 
 	/**
-	 * @param position
+	 * @param position position of this body, in meters on x axis and meters on y axis
 	 * @since 0.0.0
 	 */
 	public void setPosition(Vector2 position) {
@@ -75,7 +77,7 @@ public class Body {
 	}
 
 	/**
-	 * @return
+	 * @return velocity of this body, in meters per second on x axis and meters per second on y axis
 	 * @since 0.0.0
 	 */
 	public Vector2 getVelocity() {
@@ -83,7 +85,7 @@ public class Body {
 	}
 
 	/**
-	 * @param velocity
+	 * @param velocity velocity of this body, in meters per second on x axis and meters per second on y axis
 	 * @since 0.0.0
 	 */
 	public void setVelocity(Vector2 velocity) {
@@ -91,7 +93,7 @@ public class Body {
 	}
 
 	/**
-	 * @return
+	 * @return how this body should be painted
 	 * @since 0.0.0
 	 */
 	public Paint getPaint() {

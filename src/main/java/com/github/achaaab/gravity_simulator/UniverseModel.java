@@ -1,9 +1,7 @@
 package com.github.achaaab.gravity_simulator;
 
-import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 import static java.util.function.Function.identity;
 import static java.util.function.Predicate.not;
@@ -64,6 +62,8 @@ public class UniverseModel {
 	}
 
 	/**
+	 * Computes the next state of this universe after the given amount of time.
+	 *
 	 * @param deltaTime time elapsed since last update, in seconds
 	 * @since 0.0.0
 	 */
@@ -80,9 +80,11 @@ public class UniverseModel {
 	}
 
 	/**
-	 * @param force
-	 * @param body
-	 * @param deltaTime
+	 * Applies a force on a body during a given amount of time.
+	 *
+	 * @param force force to apply
+	 * @param body body on which to apply the force
+	 * @param deltaTime amount of time
 	 * @since 0.0.0
 	 */
 	public void apply(Vector2 force, Body body, double deltaTime) {
@@ -95,8 +97,10 @@ public class UniverseModel {
 	}
 
 	/**
-	 * @param body
-	 * @return
+	 * Computes and returns the resulting force on the given body.
+	 *
+	 * @param body body to consider
+	 * @return resulting force
 	 * @since 0.0.0
 	 */
 	private Vector2 getResultingForce(Body body) {
@@ -109,8 +113,10 @@ public class UniverseModel {
 	}
 
 	/**
-	 * @param body
-	 * @param resultingForce
+	 * Adds all gravitational forces exerting on the given body to the resulting force.
+	 *
+	 * @param body body to consider
+	 * @param resultingForce resulting force to update
 	 * @since 0.0.0
 	 */
 	private void addGravitationalForces(Body body, Vector2 resultingForce) {
@@ -123,9 +129,9 @@ public class UniverseModel {
 	/**
 	 * Computes and adds the gravitational force exerted by body1 on body0.
 	 *
-	 * @param body0
-	 * @param body1
-	 * @param resultingForce
+	 * @param body0 body on which the gravitational force is exerted
+	 * @param body1 body exerting the gravitational force
+	 * @param resultingForce resulting force (to which the computed gravitational force was added)
 	 * @since 0.0.0
 	 */
 	private void addGravitationalForce(Body body0, Body body1, Vector2 resultingForce) {
@@ -146,7 +152,7 @@ public class UniverseModel {
 	}
 
 	/**
-	 * @return
+	 * @return bodies in this universe, in the same order they were added
 	 * @since 0.0.0
 	 */
 	public List<Body> getBodies() {

@@ -27,17 +27,18 @@ public class UniverseController implements EventHandler<KeyEvent> {
 
 	private static final double ZOOM_FACTOR = 1.01;
 	private static final double TIME_FACTOR = 1.5;
-	private static final double DEFAULT_TIME_SCALE = 1_000_000;
 	private static final double MINIMUM_TIME_SCALE = 1_000;
 	private static final double MAXIMUM_TIME_SCALE = 1_000_000_000;
+	private static final double DEFAULT_TIME_SCALE = 1_000_000;
 	private static final Duration FRAME_DURATION = seconds(1.0 / 60);
 	private static final double MAXIMUM_DELTA_TIME = hours(24).toSeconds();
 
 	private final UniverseModel model;
 	private final UniverseView view;
 	private final List<Body> bodies;
+	private final Property<Body> anchor;
+
 	private double timeScale;
-	private Property<Body> anchor;
 	private int anchorIndex;
 
 	/**

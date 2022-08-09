@@ -51,4 +51,4 @@ Open bar.
 * **Jonathan Guéhenneux** - *Developer* - [Achaaab](https://github.com/Achaaab)
 
 ## License
-This project is licensed under the GNU General Public License (GPL) - see the [LICENSE.md](LICENSE.md) for the details.
+This project is licensed under the GNU General Public License (GPL) - see the [LICENSE](LICENSE) for the details.

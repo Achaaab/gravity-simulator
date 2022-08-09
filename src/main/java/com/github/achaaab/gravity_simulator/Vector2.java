@@ -6,6 +6,8 @@ import static java.lang.Math.sqrt;
 import static java.util.Objects.hash;
 
 /**
+ * vector in 2-dimensional space
+ *
  * @author Jonathan Guéhenneux
  * @since 0.0.0
  */

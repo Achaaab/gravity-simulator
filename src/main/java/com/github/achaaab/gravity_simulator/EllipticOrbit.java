@@ -23,7 +23,8 @@ public record EllipticOrbit(
 		boolean prograde) {
 
 	/**
-	 * @return velocity of the secondary body at its apoapsis
+	 * @return velocity of the secondary body at its apoapsis,
+	 * in meters per second on x axis and meters per second on y axis
 	 * @since 0.0.0
 	 */
 	public Vector2 getVelocityAtApoapsis() {

@@ -17,6 +17,18 @@ import static javafx.scene.paint.Color.WHITE;
 import static javafx.scene.paint.Color.YELLOW;
 
 /**
+ * solar system simulation with following limitations and approximations:
+ * <ul>
+ *     <li>the sun has no initial velocity</li>
+ *     <li>only gravitational forces are computed</li>
+ *     <li>only Newton / Kepler laws are applied</li>
+ *     <li>only 8 planets are rendered, plus the moon</li>
+ *     <li>all bodies are modelled as discs, in a 2-dimensional space</li>
+ *     <li>all planets and satellites orbit in same plan</li>
+ *     <li>all planets and satellites start at their apoapsis</li>
+ *     <li>time discretization can lead to significant trajectory errors,
+ *     this is attenuated by limiting time step to 24 hours</li>
+ * </ul>
  * @author Jonathan Guéhenneux
  * @since 0.0.0
  */

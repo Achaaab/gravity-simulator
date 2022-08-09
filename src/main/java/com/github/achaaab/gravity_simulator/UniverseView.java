@@ -12,6 +12,8 @@ import static java.lang.Math.max;
 import static javafx.scene.paint.Color.BLACK;
 
 /**
+ * JavaFX view of universe
+ *
  * @author Jonathan Guéhenneux
  * @since 0.0.0
  */
@@ -29,7 +31,7 @@ public class UniverseView extends Canvas {
 
 	private List<Body> bodies;
 	private double scale;
-	private Property<Body> anchor;
+	private final Property<Body> anchor;
 
 	/**
 	 * @since 0.0.0
@@ -92,9 +94,12 @@ public class UniverseView extends Canvas {
 	}
 
 	/**
-	 * @param body
-	 * @param graphicsContext
-	 * @param minimalRadius
+	 * Draws a body using the given graphics context.
+	 *
+	 * @param body body to draw
+	 * @param graphicsContext graphics context
+	 * @param minimalRadius radius of the smallest body to draw, used to scale bodies
+	 * so that no body is too small or too big
 	 * @since 0.0.0
 	 */
 	private void draw(Body body, GraphicsContext graphicsContext, double minimalRadius) {
